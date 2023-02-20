@@ -1,0 +1,1 @@
+Aquí se guarda el historial de lugares buscados

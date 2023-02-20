@@ -1,11 +1,10 @@
 require('dotenv').config()
-
 const {inquirerMenu, listadoSeleccionarLugar, pausa, leerInput} = require('./helpers/inquirer');
 const Busquedas = require('./models/busquedas');
 const Clima = require('./models/clima');
 
 const main = async () => {
-    const busquedas = new Busquedas()    
+    const busquedas = new Busquedas()
     const clima = new Clima()
     const opciones = {
         1: async () => {
@@ -13,6 +12,7 @@ const main = async () => {
             const resBusqueda =  await busquedas.porCiudad(lugar)
             const lugarSeleccionado = await listadoSeleccionarLugar(resBusqueda)
             if (!lugarSeleccionado) return
+            busquedas.agregarLugarAlHistorial(lugarSeleccionado.name)
             const {temp, temp_min, temp_max, desc} = await clima.getclimaLatLon(lugarSeleccionado.lat, lugarSeleccionado.lng)
             console.clear()
             console.log('\nInformación de la ciudad'.brightGreen)            
@@ -23,9 +23,13 @@ const main = async () => {
             console.log('Temperatura',temp)
             console.log('Mínima',temp_min)
             console.log('Máxima',temp_max)
-
         },
-        2: () => {},
+        2: () => {
+            busquedas.historialCapitalizado.forEach((name,id) => {
+                const id2 = `${id + 1}`.brightGreen
+                console.log(`${id2}.`,name)
+            })
+        },
         0: () => {}
     }
     let opt 
