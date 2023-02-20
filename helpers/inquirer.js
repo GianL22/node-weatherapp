@@ -63,6 +63,31 @@ const leerInput = async (message) => {
     const {desc} = await inquirer.prompt(pregunta)
     return desc
 }
+const listadoSeleccionarLugar = async (listadoArr = []) => {
+    
+    const choices = listadoArr.map((lugar, i) => {
+
+        const iColor = `${i + 1}.`.green; 
+
+        return {
+            name : `${iColor} ${lugar.name}`,
+            value : lugar
+        }
+    })
+    
+    choices.push({name : `${'0.'.green} Salir`, value : 0})
+
+    const pregunta = [
+        {
+            type : 'list',
+            name : 'itemSeleccionado',
+            message : 'Elige un lugar',
+            choices
+        }
+    ]
+    const {itemSeleccionado} =  await inquirer.prompt(pregunta)
+    return itemSeleccionado;
+}
 
 const confirmar = async (message) => {
     const pregunta = [
@@ -78,6 +103,7 @@ const confirmar = async (message) => {
 
 
 module.exports = {
+    listadoSeleccionarLugar,
     inquirerMenu,
     pausa,
     leerInput,

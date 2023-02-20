@@ -1,29 +1,16 @@
-const { default: axios } = require("axios")
-
+const MapBoxApi = require("../api/MapBoxApi")
 class Busquedas{
-    
     _historial = []
     get historial(){
         return this._historial
     }
-    get paramsMapBox() {
-        return {
-            'limit' : 5,
-            'language' : 'es',
-            'access_token' : process.env.MAPBOX_KEY
-        }
-    }
     async porCiudad(lugar = ''){
         try {
-            const apiGeo = axios.create({
-                baseURL: `https://api.mapbox.com/geocoding/v5/mapbox.places/${lugar}.json`,
-                params : this.paramsMapBox
-            })
-            const {data: {features = []}} = await apiGeo.get()
+            const {data: {features = []}} = await MapBoxApi.get(`/${lugar}.json`)
             return features.map(({id,place_name_es,center}) => {
                 return {
                     id,
-                    place_name_es,
+                    name : place_name_es,
                     lng: center[0],
                     lat: center[1]
                 }
@@ -33,8 +20,6 @@ class Busquedas{
             return []
         }
     }
-
+    
 }
-
-
 module.exports = Busquedas
